@@ -1,0 +1,107 @@
+<!--
+	Projekt: QSYS
+	(c) 2006
+	author: albert	
+-->
+<project name="q-struxsl" basedir="../." default="all">
+
+	<!-- Project settings -->
+	<property name="project.title" value="q-struxsl" />
+	<property name="project.distname" value="q-struxsl" />
+	<property name="project.version" value="0.1" />
+
+	<property name="src" value="src/java" />
+	<property name="classes" value="bin" />
+	<property name="dist.classes" value="dist/classes" />
+	<property name="dist.lib" value="dist/lib" />
+	<property name="lib" value="lib" />
+	<property name="build.lib" value="build/lib" />
+
+
+
+	<!-- Classpath -->
+	<path id="compile.classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${build.lib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Check timestamp on files -->
+	<target name="prepare">
+		<tstamp />
+	</target>
+
+	<!-- Kopiert alle Ressources- und Konfigurationsdateien -->
+	<target name="resources">
+
+		<echo>+---------------------------------------------------+</echo>
+		<echo>|                                                   |</echo>
+		<echo>|      R U N N I N G     R E S O U R C E S          |</echo>
+		<echo>|                                                   |</echo>
+		<echo>+---------------------------------------------------+</echo>
+
+		<copy todir="${webinf.classes}" includeEmptyDirs="no">
+			<fileset dir="${src}">
+				<patternset>
+					<include name="**/*.properties" />
+				</patternset>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Compile-Task fuer die Anwendung -->
+	<target name="compile" depends="prepare,resources">
+
+		<echo>+---------------------------------------------------+</echo>
+		<echo>|                                                   |</echo>
+		<echo>|       R U N N I N G       C O M P I L E           |</echo>
+		<echo>|                                                   |</echo>
+		<echo>+---------------------------------------------------+</echo>
+
+		<javac srcdir="${src}" destdir="${dist.classes}" debug="on" deprecation="on" listfiles="yes">
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+	<!-- Loescht alle generierten Ergebnisse -->
+	<target name="clean">
+
+		<echo>+---------------------------------------------------+</echo>
+		<echo>|                                                   |</echo>
+		<echo>|          R U N N I N G   C L E A N                |</echo>
+		<echo>| 												  |</echo>
+		<echo>+---------------------------------------------------+</echo>
+
+		<delete dir="${dist.classes}" />
+		<mkdir dir="${dist.classes}" />
+		<delete dir="${dist.lib}" />
+		<mkdir dir="${dist.lib}" />
+	</target>
+
+
+	<!-- Erzeugt die Distribution dieses Projekts -->
+	<target name="dist" depends="clean, resources, compile" description="Create binary distribution">
+
+		<echo>+---------------------------------------------------+</echo>
+		<echo>|                                                   |</echo>
+		<echo>|     R U N N I N G   D I S T R I B U T I O N       |</echo>
+		<echo>|                                                   |</echo>
+		<echo>+---------------------------------------------------+</echo>
+
+		
+		<jar jarfile="${dist.lib}/${project.distname}.jar">
+			<fileset dir="${dist.classes}" >
+				<patternset>
+					<include name="**/*.class" />
+					<include name="**/*.properties" />
+				</patternset>
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- Erzeugt alles fuer diese Projekt -->
+	<target name="all" depends="prepare" />
+</project>
